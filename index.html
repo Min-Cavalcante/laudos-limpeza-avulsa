@@ -368,6 +368,19 @@
               <label>Geração 15 dias depois <span class="required">*</span> <span class="opt">(kWh)</span></label>
               <input class="input" type="text" inputmode="decimal" name="geracaoDepois" id="geracaoDepois" placeholder="Ex: 1.448,75">
             </div>
+             <!-- Adicionar após o campo "Geração Depois (kWh)" -->
+            <div class="form-group">
+                <label for="tarifaEnergia">Tarifa de Energia (R$/kWh) *</label>
+                <input 
+                    type="number" 
+                    id="tarifaEnergia" 
+                    step="0.01" 
+                    min="0"
+                    placeholder="Ex: 0.95"
+                    required
+                >
+                <small style="color: var(--gray-600); font-size: 0.875rem;">Valor em reais por kWh</small>
+            </div>
           </div>
         </div>
 
