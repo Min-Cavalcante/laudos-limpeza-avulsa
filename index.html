@@ -182,6 +182,11 @@
     border-radius: 8px;
     margin-bottom: 24px;
     cursor: pointer;
+    transition: all .15s;
+  }
+
+  .checkbox-field:hover {
+    background: var(--gauss-green-300);
   }
 
   .checkbox-field input[type="checkbox"] {
@@ -189,6 +194,7 @@
     width: 18px;
     height: 18px;
     cursor: pointer;
+    accent-color: var(--gauss-green);
   }
 
   .checkbox-field label {
@@ -355,6 +361,22 @@
     line-height: 1.5;
   }
 
+  /* Animação suave para mostrar/esconder campos */
+  .slide-down {
+    animation: slideDown 0.3s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   @media (max-width: 640px) {
     .field-grid {
       grid-template-columns: 1fr;
@@ -444,8 +466,8 @@
     <!-- Campos específicos - Limpeza Avulsa -->
     <div id="camposAvulsa">
       <div class="card">
-        <div class="checkbox-field" onclick="document.getElementById('coletarGeracao').click()">
-          <input type="checkbox" id="coletarGeracao" name="coletarGeracao">
+        <div class="checkbox-field" onclick="toggleCheckbox('coletarGeracao')">
+          <input type="checkbox" id="coletarGeracao" name="coletarGeracao" onclick="event.stopPropagation()">
           <label for="coletarGeracao">Coletar dados de geração (antes e depois da limpeza)</label>
         </div>
 
@@ -453,11 +475,11 @@
           <div class="field-grid">
             <div class="field">
               <label>Geração 15 dias antes (kWh) <span class="required">*</span></label>
-              <input type="number" name="geracaoAntes" step="0.01" placeholder="Ex: 1250.50">
+              <input type="number" name="geracaoAntes" id="geracaoAntes" step="0.01" placeholder="Ex: 1250.50">
             </div>
             <div class="field">
               <label>Geração 15 dias depois (kWh) <span class="required">*</span></label>
-              <input type="number" name="geracaoDepois" step="0.01" placeholder="Ex: 1448.75">
+              <input type="number" name="geracaoDepois" id="geracaoDepois" step="0.01" placeholder="Ex: 1448.75">
             </div>
           </div>
         </div>
@@ -465,11 +487,11 @@
         <div class="field-grid" style="margin-top: 20px;">
           <div class="field">
             <label>Valor da Limpeza Avulsa (R$) <span class="required">*</span></label>
-            <input type="number" name="valorAvulsa" step="0.01" placeholder="Ex: 450.00">
+            <input type="number" name="valorAvulsa" id="valorAvulsa" step="0.01" placeholder="Ex: 450.00">
           </div>
           <div class="field">
             <label>Valor do Pacote de Limpezas (R$) <span class="required">*</span></label>
-            <input type="number" name="valorPacote" step="0.01" placeholder="Ex: 1200.00">
+            <input type="number" name="valorPacote" id="valorPacote" step="0.01" placeholder="Ex: 1200.00">
           </div>
         </div>
       </div>
@@ -524,6 +546,37 @@
 </div>
 
 <script>
+// Função para toggle do checkbox (chamada pelo clique no div)
+function toggleCheckbox(checkboxId) {
+  const checkbox = document.getElementById(checkboxId);
+  checkbox.checked = !checkbox.checked;
+  toggleDadosGeracao();
+}
+
+// Função para mostrar/esconder campos de geração
+function toggleDadosGeracao() {
+  const checkbox = document.getElementById('coletarGeracao');
+  const dadosGeracao = document.getElementById('dadosGeracao');
+  const geracaoAntes = document.getElementById('geracaoAntes');
+  const geracaoDepois = document.getElementById('geracaoDepois');
+  
+  if (checkbox.checked) {
+    dadosGeracao.classList.remove('hidden');
+    dadosGeracao.classList.add('slide-down');
+    geracaoAntes.required = true;
+    geracaoDepois.required = true;
+  } else {
+    dadosGeracao.classList.add('hidden');
+    geracaoAntes.required = false;
+    geracaoDepois.required = false;
+    geracaoAntes.value = '';
+    geracaoDepois.value = '';
+  }
+}
+
+// Event listener direto no checkbox também
+document.getElementById('coletarGeracao').addEventListener('change', toggleDadosGeracao);
+
 // Alternar campos baseado no tipo de laudo
 const radioAvulsa = document.getElementById('avulsa');
 const radioPadrao = document.getElementById('padrao');
@@ -532,6 +585,8 @@ const camposAvulsa = document.getElementById('camposAvulsa');
 radioAvulsa.addEventListener('change', () => {
   if (radioAvulsa.checked) {
     camposAvulsa.classList.remove('hidden');
+    document.getElementById('valorAvulsa').required = true;
+    document.getElementById('valorPacote').required = true;
   }
 });
 
@@ -540,18 +595,10 @@ radioPadrao.addEventListener('change', () => {
     camposAvulsa.classList.add('hidden');
     document.getElementById('coletarGeracao').checked = false;
     document.getElementById('dadosGeracao').classList.add('hidden');
-  }
-});
-
-// Toggle dados de geração
-document.getElementById('coletarGeracao').addEventListener('change', (e) => {
-  const dadosGeracao = document.getElementById('dadosGeracao');
-  if (e.target.checked) {
-    dadosGeracao.classList.remove('hidden');
-    dadosGeracao.querySelectorAll('input').forEach(input => input.required = true);
-  } else {
-    dadosGeracao.classList.add('hidden');
-    dadosGeracao.querySelectorAll('input').forEach(input => input.required = false);
+    document.getElementById('valorAvulsa').required = false;
+    document.getElementById('valorPacote').required = false;
+    document.getElementById('geracaoAntes').required = false;
+    document.getElementById('geracaoDepois').required = false;
   }
 });
 
@@ -566,6 +613,7 @@ function setupFilePreview(inputId, previewId, maxFiles = 2) {
     
     if (files.length + newFiles.length > maxFiles) {
       showAlert(`Você pode adicionar no máximo ${maxFiles} fotos`, 'error');
+      input.value = '';
       return;
     }
 
@@ -583,7 +631,7 @@ function setupFilePreview(inputId, previewId, maxFiles = 2) {
         div.className = 'file-preview-item';
         div.innerHTML = `
           <img src="${e.target.result}" alt="Preview">
-          <button type="button" class="remove" onclick="removeFile('${inputId}', ${index})">×</button>
+          <button type="button" class="remove" data-input="${inputId}" data-index="${index}">×</button>
         `;
         preview.appendChild(div);
       };
@@ -596,15 +644,15 @@ function setupFilePreview(inputId, previewId, maxFiles = 2) {
     input.files = dataTransfer.files;
   }
 
-  window[`removeFile_${inputId}`] = function(index) {
-    files.splice(index, 1);
-    updatePreview();
-  };
+  // Event delegation para botões de remover
+  preview.addEventListener('click', (e) => {
+    if (e.target.classList.contains('remove')) {
+      const index = parseInt(e.target.dataset.index);
+      files.splice(index, 1);
+      updatePreview();
+    }
+  });
 }
-
-window.removeFile = function(inputId, index) {
-  window[`removeFile_${inputId}`](index);
-};
 
 setupFilePreview('fotosAntes', 'previewAntes', 2);
 setupFilePreview('fotosDepois', 'previewDepois', 2);
@@ -655,6 +703,18 @@ document.getElementById('laudoForm').addEventListener('submit', async (e) => {
       showAlert('Por favor, preencha os valores da limpeza avulsa e do pacote', 'error');
       return;
     }
+
+    // Validação dos dados de geração se checkbox estiver marcado
+    const coletarGeracao = document.getElementById('coletarGeracao').checked;
+    if (coletarGeracao) {
+      const geracaoAntes = formData.get('geracaoAntes');
+      const geracaoDepois = formData.get('geracaoDepois');
+      
+      if (!geracaoAntes || !geracaoDepois) {
+        showAlert('Por favor, preencha os dados de geração antes e depois da limpeza', 'error');
+        return;
+      }
+    }
   }
 
   // Preparar dados para envio
@@ -674,9 +734,17 @@ document.getElementById('laudoForm').addEventListener('submit', async (e) => {
     laudoData.valorAvulsa = formData.get('valorAvulsa');
     laudoData.valorPacote = formData.get('valorPacote');
     
-    if (formData.get('coletarGeracao') === 'on') {
+    if (document.getElementById('coletarGeracao').checked) {
       laudoData.geracaoAntes = formData.get('geracaoAntes');
       laudoData.geracaoDepois = formData.get('geracaoDepois');
+      
+      // Calcular aumento percentual
+      const antes = parseFloat(laudoData.geracaoAntes);
+      const depois = parseFloat(laudoData.geracaoDepois);
+      if (antes && depois) {
+        const aumento = ((depois - antes) / antes * 100).toFixed(2);
+        laudoData.aumentoPercentual = aumento;
+      }
     }
   }
 
@@ -699,6 +767,7 @@ document.getElementById('laudoForm').addEventListener('submit', async (e) => {
     // e.target.reset();
     // document.getElementById('previewAntes').innerHTML = '';
     // document.getElementById('previewDepois').innerHTML = '';
+    // document.getElementById('dadosGeracao').classList.add('hidden');
   }, 2000);
 });
 
