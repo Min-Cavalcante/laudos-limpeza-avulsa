@@ -433,19 +433,23 @@
 </div>
 
 <script>
-// Toggle do checkbox (clique no callout inteiro)
+// ========== CONFIGURAÇÃO ==========
+const WEBHOOK_URL = 'https://n8n.gaussenergia.com.br/webhook-test/laudo-limpeza'; // ⚠️ ALTERE AQUI
+
+// Função para toggle do checkbox (chamada pelo clique no div)
 function toggleCheckbox(checkboxId) {
   const checkbox = document.getElementById(checkboxId);
   checkbox.checked = !checkbox.checked;
   toggleDadosGeracao();
 }
 
+// Função para mostrar/esconder campos de geração
 function toggleDadosGeracao() {
   const checkbox = document.getElementById('coletarGeracao');
   const dadosGeracao = document.getElementById('dadosGeracao');
   const geracaoAntes = document.getElementById('geracaoAntes');
   const geracaoDepois = document.getElementById('geracaoDepois');
-
+  
   if (checkbox.checked) {
     dadosGeracao.classList.remove('hidden');
     dadosGeracao.classList.add('slide-down');
@@ -459,9 +463,11 @@ function toggleDadosGeracao() {
     geracaoDepois.value = '';
   }
 }
+
+// Event listener direto no checkbox também
 document.getElementById('coletarGeracao').addEventListener('change', toggleDadosGeracao);
 
-// Alternar campos conforme tipo de laudo
+// Alternar campos baseado no tipo de laudo
 const radioAvulsa = document.getElementById('avulsa');
 const radioPadrao = document.getElementById('padrao');
 const camposAvulsa = document.getElementById('camposAvulsa');
@@ -486,12 +492,6 @@ radioPadrao.addEventListener('change', () => {
   }
 });
 
-// Converte número no formato pt-BR ("1.250,50") para float
-function parsePtBrNumber(str) {
-  if (!str) return NaN;
-  return parseFloat(String(str).replace(/\./g, '').replace(',', '.'));
-}
-
 // Preview de imagens
 function setupFilePreview(inputId, previewId, maxFiles = 2) {
   const input = document.getElementById(inputId);
@@ -500,7 +500,7 @@ function setupFilePreview(inputId, previewId, maxFiles = 2) {
 
   input.addEventListener('change', (e) => {
     const newFiles = Array.from(e.target.files);
-
+    
     if (files.length + newFiles.length > maxFiles) {
       showAlert(`Você pode adicionar no máximo ${maxFiles} fotos`, 'error');
       input.value = '';
@@ -513,17 +513,15 @@ function setupFilePreview(inputId, previewId, maxFiles = 2) {
 
   function updatePreview() {
     preview.innerHTML = '';
-
+    
     files.forEach((file, index) => {
       const reader = new FileReader();
       reader.onload = (e) => {
         const div = document.createElement('div');
         div.className = 'file-preview-item';
         div.innerHTML = `
-          <img src="${e.target.result}" alt="Pré-visualização">
-          <button type="button" class="remove" data-input="${inputId}" data-index="${index}" aria-label="Remover foto">
-            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
-          </button>
+          <img src="${e.target.result}" alt="Preview">
+          <button type="button" class="remove" data-input="${inputId}" data-index="${index}">×</button>
         `;
         preview.appendChild(div);
       };
@@ -536,9 +534,8 @@ function setupFilePreview(inputId, previewId, maxFiles = 2) {
   }
 
   preview.addEventListener('click', (e) => {
-    const btn = e.target.closest('.remove');
-    if (btn) {
-      const index = parseInt(btn.dataset.index);
+    if (e.target.classList.contains('remove')) {
+      const index = parseInt(e.target.dataset.index);
       files.splice(index, 1);
       updatePreview();
     }
@@ -548,43 +545,58 @@ function setupFilePreview(inputId, previewId, maxFiles = 2) {
 setupFilePreview('fotosAntes', 'previewAntes', 2);
 setupFilePreview('fotosDepois', 'previewDepois', 2);
 
-// Sistema de alertas
+// Alert system
 function showAlert(message, type = 'success') {
   const container = document.getElementById('alertContainer');
   const alert = document.createElement('div');
   alert.className = `alert alert-${type}`;
-  const icon = type === 'success'
-    ? '<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></svg>'
-    : '<svg class="icon" viewBox="0 0 24 24"><path d="M12 3.5 21 19H3z"/><line x1="12" y1="10" x2="12" y2="14.5"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg>';
-  alert.innerHTML = `${icon}<div class="content">${message}</div>`;
+  alert.innerHTML = `
+    <div class="icon">${type === 'success' ? '✓' : '⚠'}</div>
+    <div class="content">${message}</div>
+  `;
   container.appendChild(alert);
-
-  setTimeout(() => { alert.remove(); }, 5000);
+  
+  setTimeout(() => {
+    alert.remove();
+  }, 5000);
 }
 
-// Envio do formulário
+// Função para converter arquivo para Base64
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+
+// Form submission
 document.getElementById('laudoForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-
+  
   const formData = new FormData(e.target);
   const tipoLaudo = formData.get('tipoLaudo');
-
+  
+  // Validação de fotos
   const fotosAntes = document.getElementById('fotosAntes').files;
   const fotosDepois = document.getElementById('fotosDepois').files;
-
+  
   if (fotosAntes.length !== 2) {
-    showAlert('Por favor, adicione exatamente 2 fotos de antes da limpeza', 'error');
+    showAlert('Por favor, adicione exatamente 2 fotos ANTES da limpeza', 'error');
     return;
   }
+  
   if (fotosDepois.length !== 2) {
-    showAlert('Por favor, adicione exatamente 2 fotos de depois da limpeza', 'error');
+    showAlert('Por favor, adicione exatamente 2 fotos DEPOIS da limpeza', 'error');
     return;
   }
 
+  // Validação específica para limpeza avulsa
   if (tipoLaudo === 'avulsa') {
     const valorAvulsa = formData.get('valorAvulsa');
     const valorPacote = formData.get('valorPacote');
-
+    
     if (!valorAvulsa || !valorPacote) {
       showAlert('Por favor, preencha os valores da limpeza avulsa e do pacote', 'error');
       return;
@@ -594,7 +606,7 @@ document.getElementById('laudoForm').addEventListener('submit', async (e) => {
     if (coletarGeracao) {
       const geracaoAntes = formData.get('geracaoAntes');
       const geracaoDepois = formData.get('geracaoDepois');
-
+      
       if (!geracaoAntes || !geracaoDepois) {
         showAlert('Por favor, preencha os dados de geração antes e depois da limpeza', 'error');
         return;
@@ -602,48 +614,112 @@ document.getElementById('laudoForm').addEventListener('submit', async (e) => {
     }
   }
 
-  const laudoData = {
-    tipoLaudo: formData.get('tipoLaudo'),
-    nomeCliente: formData.get('nomeCliente'),
-    codigoProjeto: formData.get('codigoProjeto'),
-    endereco: formData.get('endereco'),
-    dataLimpeza: formData.get('dataLimpeza'),
-    tecnicoResponsavel: formData.get('tecnico'),
-    analistaResponsavel: formData.get('analista'),
-    observacao: formData.get('observacao'),
-    timestamp: new Date().toISOString()
-  };
-
-  if (tipoLaudo === 'avulsa') {
-    laudoData.valorAvulsa = parsePtBrNumber(formData.get('valorAvulsa'));
-    laudoData.valorPacote = parsePtBrNumber(formData.get('valorPacote'));
-
-    if (document.getElementById('coletarGeracao').checked) {
-      const antes = parsePtBrNumber(formData.get('geracaoAntes'));
-      const depois = parsePtBrNumber(formData.get('geracaoDepois'));
-      laudoData.geracaoAntes = antes;
-      laudoData.geracaoDepois = depois;
-
-      if (!isNaN(antes) && !isNaN(depois) && antes !== 0) {
-        laudoData.aumentoPercentual = ((depois - antes) / antes * 100).toFixed(2);
-      }
-    }
-  }
-
-  console.log('Dados do laudo:', laudoData);
-  console.log('Fotos antes:', fotosAntes);
-  console.log('Fotos depois:', fotosDepois);
-
+  // Preparar dados para envio
   const submitBtn = e.target.querySelector('button[type="submit"]');
   submitBtn.disabled = true;
-  submitBtn.innerHTML = '<span style="animation: spin 1s linear infinite; display: inline-block;">◐</span> Gerando laudo…';
+  submitBtn.innerHTML = '<span style="animation: spin 1s linear infinite; display: inline-block;">◐</span> Processando imagens...';
 
-  setTimeout(() => {
-    showAlert('Laudo gerado com sucesso! Os dados foram registrados no sistema.', 'success');
+  try {
+    // Converter imagens para Base64
+    const fotosAntesBase64 = await Promise.all(
+      Array.from(fotosAntes).map(async (file) => ({
+        nome: file.name,
+        tipo: file.type,
+        tamanho: file.size,
+        dados: await fileToBase64(file)
+      }))
+    );
+
+    const fotosDepoisBase64 = await Promise.all(
+      Array.from(fotosDepois).map(async (file) => ({
+        nome: file.name,
+        tipo: file.type,
+        tamanho: file.size,
+        dados: await fileToBase64(file)
+      }))
+    );
+
+    submitBtn.innerHTML = '<span style="animation: spin 1s linear infinite; display: inline-block;">◐</span> Enviando laudo...';
+
+    // Montar payload
+    const payload = {
+      tipoLaudo: formData.get('tipoLaudo'),
+      informacoesGerais: {
+        nomeCliente: formData.get('nomeCliente'),
+        codigoProjeto: formData.get('codigoProjeto'),
+        endereco: formData.get('endereco'),
+        dataLimpeza: formData.get('dataLimpeza'),
+        tecnicoResponsavel: formData.get('tecnico'),
+        analistaResponsavel: formData.get('analista')
+      },
+      fotos: {
+        antes: fotosAntesBase64,
+        depois: fotosDepoisBase64
+      },
+      observacao: formData.get('observacao') || null,
+      timestamp: new Date().toISOString()
+    };
+
+    // Adicionar campos específicos da limpeza avulsa
+    if (tipoLaudo === 'avulsa') {
+      payload.valoresComerciais = {
+        valorAvulsa: parseFloat(formData.get('valorAvulsa')),
+        valorPacote: parseFloat(formData.get('valorPacote'))
+      };
+
+      const coletarGeracao = document.getElementById('coletarGeracao').checked;
+      if (coletarGeracao) {
+        const geracaoAntes = parseFloat(formData.get('geracaoAntes'));
+        const geracaoDepois = parseFloat(formData.get('geracaoDepois'));
+        
+        payload.dadosGeracao = {
+          geracaoAntes: geracaoAntes,
+          geracaoDepois: geracaoDepois,
+          diferenca: geracaoDepois - geracaoAntes,
+          aumentoPercentual: ((geracaoDepois - geracaoAntes) / geracaoAntes * 100).toFixed(2)
+        };
+      }
+    }
+
+    // Enviar para o webhook
+    const response = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro HTTP: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('Resposta do servidor:', result);
+
+    showAlert('✅ Laudo gerado com sucesso! Os dados foram registrados no sistema.', 'success');
+    
+    // Resetar formulário após sucesso
+    setTimeout(() => {
+      e.target.reset();
+      document.getElementById('previewAntes').innerHTML = '';
+      document.getElementById('previewDepois').innerHTML = '';
+      document.getElementById('dadosGeracao').classList.add('hidden');
+    }, 2000);
+
+  } catch (error) {
+    console.error('Erro ao enviar laudo:', error);
+    showAlert(`❌ Erro ao enviar laudo: ${error.message}. Tente novamente.`, 'error');
+  } finally {
     submitBtn.disabled = false;
-    submitBtn.innerHTML = 'Gerar laudo de limpeza <span class="arrow">→</span>';
-  }, 2000);
+    submitBtn.innerHTML = 'Gerar Laudo de Limpeza <span>→</span>';
+  }
 });
+
+// Animação de spin
+const style = document.createElement('style');
+style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+document.head.appendChild(style);
 </script>
 </body>
 </html>
