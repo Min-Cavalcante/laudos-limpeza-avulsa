@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laudo de Limpeza — Gauss Energia</title>
+<link rel="stylesheet" href="./colors_and_type.css">
+<style>
+  body { 
+    margin: 0; 
+    padding: 32px 20px; 
+    background: var(--bg-paper);
+    min-height: 100vh;
+  }
+  
+  .container {
+    max-width: 840px;
+    margin: 0 auto;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border-hairline);
+  }
+
+  .header .logo {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 16px;
+    background: var(--gauss-green);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 24px;
+    color: white;
+  }
+
+  .header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+    color: var(--ink-900);
+  }
+
+  .header p {
+    color: var(--fg-3);
+    margin: 0;
+  }
+
+  .card {
+    background: white;
+    border: 1px solid var(--border-hairline);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gauss-green-700);
+    margin: 0 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--gauss-green-100);
+  }
+
+  .field {
+    margin-bottom: 20px;
+  }
+
+  .field label {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-700);
+    margin-bottom: 8px;
+  }
+
+  .field label .required {
+    color: var(--signal-warn);
+    margin-left: 2px;
+  }
+
+  .field input[type="text"],
+  .field input[type="date"],
+  .field input[type="number"],
+  .field textarea {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 15px;
+    padding: 12px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--ink-300);
+    background: white;
+    transition: all .15s;
+    box-sizing: border-box;
+  }
+
+  .field input:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--gauss-green);
+    box-shadow: 0 0 0 3px rgba(57,181,74,0.12);
+  }
+
+  .field textarea {
+    min-height: 100px;
+    resize: vertical;
+    font-family: var(--font-body);
+  }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .radio-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .radio-card {
+    flex: 1;
+    position: relative;
+  }
+
+  .radio-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .radio-card label {
+    display: block;
+    padding: 20px;
+    background: white;
+    border: 2px solid var(--ink-200);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .15s;
+    text-align: center;
+  }
+
+  .radio-card input:checked + label {
+    border-color: var(--gauss-green);
+    background: var(--gauss-green-100);
+  }
+
+  .radio-card label .title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--ink-900);
+    margin-bottom: 4px;
+  }
+
+  .radio-card label .desc {
+    font-size: 12px;
+    color: var(--fg-3);
+  }
+
+  .checkbox-field {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    background: var(--gauss-green-100);
+    border: 1px solid var(--gauss-green-300);
+    border-radius: 8px;
+    margin-bottom: 24px;
+    cursor: pointer;
+  }
+
+  .checkbox-field input[type="checkbox"] {
+    margin-top: 2px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+  }
+
+  .checkbox-field label {
+    flex: 1;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink-900);
+    cursor: pointer;
+    margin: 0;
+  }
+
+  .file-upload {
+    border: 2px dashed var(--ink-300);
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    background: var(--ink-50);
+    transition: all .15s;
+    cursor: pointer;
+  }
+
+  .file-upload:hover {
+    border-color: var(--gauss-green);
+    background: var(--gauss-green-100);
+  }
+
+  .file-upload input[type="file"] {
+    display: none;
+  }
+
+  .file-upload .icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+
+  .file-upload .text {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-700);
+    margin-bottom: 4px;
+  }
+
+  .file-upload .hint {
+    font-size: 12px;
+    color: var(--fg-3);
+  }
+
+  .file-preview {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .file-preview-item {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border-hairline);
+  }
+
+  .file-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .file-preview-item .remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    background: rgba(217,83,79,0.9);
+    border-radius: 4px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 16px;
+    padding: 16px 32px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all .15s;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .btn-primary {
+    background: var(--gauss-green);
+    color: var(--ink-1000);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn-primary:hover {
+    background: var(--gauss-green-700);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .submit-section {
+    margin-top: 32px;
+  }
+
+  .alert {
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .alert-success {
+    background: var(--gauss-green-100);
+    border: 1px solid var(--gauss-green-300);
+    color: var(--gauss-green-900);
+  }
+
+  .alert-error {
+    background: #FEF3E1;
+    border: 1px solid var(--signal-warn);
+    color: #946100;
+  }
+
+  .alert .icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .alert .content {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 640px) {
+    .field-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .radio-group {
+      flex-direction: column;
+    }
+    
+    body {
+      padding: 20px 16px;
+    }
+    
+    .card {
+      padding: 24px 20px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="header">
+    <div class="logo">G</div>
+    <h1>Laudo de Limpeza</h1>
+    <p>Sistema de registro e documentação de limpeza fotovoltaica</p>
+  </header>
+
+  <form id="laudoForm">
+    <!-- Tipo de Laudo -->
+    <div class="card">
+      <div class="section-title">Tipo de Laudo</div>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" name="tipoLaudo" id="avulsa" value="avulsa" checked>
+          <label for="avulsa">
+            <div class="title">Limpeza Avulsa</div>
+            <div class="desc">Com dados de geração e valores comerciais</div>
+          </label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="tipoLaudo" id="padrao" value="padrao">
+          <label for="padrao">
+            <div class="title">Limpeza Padrão</div>
+            <div class="desc">Apenas informações técnicas e fotos</div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informações Gerais -->
+    <div class="card">
+      <div class="section-title">Informações Gerais</div>
+      
+      <div class="field">
+        <label>Nome do Cliente <span class="required">*</span></label>
+        <input type="text" name="nomeCliente" required placeholder="Ex: João Silva">
+      </div>
+
+      <div class="field-grid">
+        <div class="field">
+          <label>Código do Projeto <span class="required">*</span></label>
+          <input type="text" name="codigoProjeto" required placeholder="Ex: GE-2024-001">
+        </div>
+        <div class="field">
+          <label>Data da Limpeza <span class="required">*</span></label>
+          <input type="date" name="dataLimpeza" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Endereço <span class="required">*</span></label>
+        <input type="text" name="endereco" required placeholder="Rua, número, bairro, cidade - UF">
+      </div>
+
+      <div class="field-grid">
+        <div class="field">
+          <label>Técnico Responsável <span class="required">*</span></label>
+          <input type="text" name="tecnico" required placeholder="Nome completo">
+        </div>
+        <div class="field">
+          <label>Analista Responsável <span class="required">*</span></label>
+          <input type="text" name="analista" required placeholder="Nome completo">
+        </div>
+      </div>
+    </div>
+
+    <!-- Campos específicos - Limpeza Avulsa -->
+    <div id="camposAvulsa">
+      <div class="card">
+        <div class="checkbox-field" onclick="document.getElementById('coletarGeracao').click()">
+          <input type="checkbox" id="coletarGeracao" name="coletarGeracao">
+          <label for="coletarGeracao">Coletar dados de geração (antes e depois da limpeza)</label>
+        </div>
+
+        <div id="dadosGeracao" class="hidden">
+          <div class="field-grid">
+            <div class="field">
+              <label>Geração 15 dias antes (kWh) <span class="required">*</span></label>
+              <input type="number" name="geracaoAntes" step="0.01" placeholder="Ex: 1250.50">
+            </div>
+            <div class="field">
+              <label>Geração 15 dias depois (kWh) <span class="required">*</span></label>
+              <input type="number" name="geracaoDepois" step="0.01" placeholder="Ex: 1448.75">
+            </div>
+          </div>
+        </div>
+
+        <div class="field-grid" style="margin-top: 20px;">
+          <div class="field">
+            <label>Valor da Limpeza Avulsa (R$) <span class="required">*</span></label>
+            <input type="number" name="valorAvulsa" step="0.01" placeholder="Ex: 450.00">
+          </div>
+          <div class="field">
+            <label>Valor do Pacote de Limpezas (R$) <span class="required">*</span></label>
+            <input type="number" name="valorPacote" step="0.01" placeholder="Ex: 1200.00">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fotos -->
+    <div class="card">
+      <div class="section-title">Documentação Fotográfica</div>
+      
+      <div class="field">
+        <label>Fotos ANTES da limpeza <span class="required">*</span> <span style="font-weight: 400; color: var(--fg-3);">(2 fotos)</span></label>
+        <div class="file-upload" onclick="document.getElementById('fotosAntes').click()">
+          <div class="icon">📷</div>
+          <div class="text">Clique para selecionar fotos</div>
+          <div class="hint">PNG, JPG ou WEBP · Máx. 5MB cada</div>
+          <input type="file" id="fotosAntes" name="fotosAntes" accept="image/*" multiple>
+        </div>
+        <div id="previewAntes" class="file-preview"></div>
+      </div>
+
+      <div class="field">
+        <label>Fotos DEPOIS da limpeza <span class="required">*</span> <span style="font-weight: 400; color: var(--fg-3);">(2 fotos)</span></label>
+        <div class="file-upload" onclick="document.getElementById('fotosDepois').click()">
+          <div class="icon">📷</div>
+          <div class="text">Clique para selecionar fotos</div>
+          <div class="hint">PNG, JPG ou WEBP · Máx. 5MB cada</div>
+          <input type="file" id="fotosDepois" name="fotosDepois" accept="image/*" multiple>
+        </div>
+        <div id="previewDepois" class="file-preview"></div>
+      </div>
+    </div>
+
+    <!-- Observações -->
+    <div class="card">
+      <div class="section-title">Observações</div>
+      <div class="field">
+        <label>Observação (opcional)</label>
+        <textarea name="observacao" placeholder="Informações adicionais sobre a limpeza, condições encontradas, recomendações, etc."></textarea>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-section">
+      <button type="submit" class="btn btn-primary">
+        Gerar Laudo de Limpeza
+        <span>→</span>
+      </button>
+    </div>
+  </form>
+
+  <div id="alertContainer"></div>
+</div>
+
+<script>
+// Alternar campos baseado no tipo de laudo
+const radioAvulsa = document.getElementById('avulsa');
+const radioPadrao = document.getElementById('padrao');
+const camposAvulsa = document.getElementById('camposAvulsa');
+
+radioAvulsa.addEventListener('change', () => {
+  if (radioAvulsa.checked) {
+    camposAvulsa.classList.remove('hidden');
+  }
+});
+
+radioPadrao.addEventListener('change', () => {
+  if (radioPadrao.checked) {
+    camposAvulsa.classList.add('hidden');
+    document.getElementById('coletarGeracao').checked = false;
+    document.getElementById('dadosGeracao').classList.add('hidden');
+  }
+});
+
+// Toggle dados de geração
+document.getElementById('coletarGeracao').addEventListener('change', (e) => {
+  const dadosGeracao = document.getElementById('dadosGeracao');
+  if (e.target.checked) {
+    dadosGeracao.classList.remove('hidden');
+    dadosGeracao.querySelectorAll('input').forEach(input => input.required = true);
+  } else {
+    dadosGeracao.classList.add('hidden');
+    dadosGeracao.querySelectorAll('input').forEach(input => input.required = false);
+  }
+});
+
+// Preview de imagens
+function setupFilePreview(inputId, previewId, maxFiles = 2) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  let files = [];
+
+  input.addEventListener('change', (e) => {
+    const newFiles = Array.from(e.target.files);
+    
+    if (files.length + newFiles.length > maxFiles) {
+      showAlert(`Você pode adicionar no máximo ${maxFiles} fotos`, 'error');
+      return;
+    }
+
+    files = [...files, ...newFiles];
+    updatePreview();
+  });
+
+  function updatePreview() {
+    preview.innerHTML = '';
+    
+    files.forEach((file, index) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const div = document.createElement('div');
+        div.className = 'file-preview-item';
+        div.innerHTML = `
+          <img src="${e.target.result}" alt="Preview">
+          <button type="button" class="remove" onclick="removeFile('${inputId}', ${index})">×</button>
+        `;
+        preview.appendChild(div);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Update input files
+    const dataTransfer = new DataTransfer();
+    files.forEach(file => dataTransfer.items.add(file));
+    input.files = dataTransfer.files;
+  }
+
+  window[`removeFile_${inputId}`] = function(index) {
+    files.splice(index, 1);
+    updatePreview();
+  };
+}
+
+window.removeFile = function(inputId, index) {
+  window[`removeFile_${inputId}`](index);
+};
+
+setupFilePreview('fotosAntes', 'previewAntes', 2);
+setupFilePreview('fotosDepois', 'previewDepois', 2);
+
+// Alert system
+function showAlert(message, type = 'success') {
+  const container = document.getElementById('alertContainer');
+  const alert = document.createElement('div');
+  alert.className = `alert alert-${type}`;
+  alert.innerHTML = `
+    <div class="icon">${type === 'success' ? '✓' : '⚠'}</div>
+    <div class="content">${message}</div>
+  `;
+  container.appendChild(alert);
+  
+  setTimeout(() => {
+    alert.remove();
+  }, 5000);
+}
+
+// Form submission
+document.getElementById('laudoForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const formData = new FormData(e.target);
+  const tipoLaudo = formData.get('tipoLaudo');
+  
+  // Validação de fotos
+  const fotosAntes = document.getElementById('fotosAntes').files;
+  const fotosDepois = document.getElementById('fotosDepois').files;
+  
+  if (fotosAntes.length !== 2) {
+    showAlert('Por favor, adicione exatamente 2 fotos ANTES da limpeza', 'error');
+    return;
+  }
+  
+  if (fotosDepois.length !== 2) {
+    showAlert('Por favor, adicione exatamente 2 fotos DEPOIS da limpeza', 'error');
+    return;
+  }
+
+  // Validação específica para limpeza avulsa
+  if (tipoLaudo === 'avulsa') {
+    const valorAvulsa = formData.get('valorAvulsa');
+    const valorPacote = formData.get('valorPacote');
+    
+    if (!valorAvulsa || !valorPacote) {
+      showAlert('Por favor, preencha os valores da limpeza avulsa e do pacote', 'error');
+      return;
+    }
+  }
+
+  // Preparar dados para envio
+  const laudoData = {
+    tipoLaudo: formData.get('tipoLaudo'),
+    nomeCliente: formData.get('nomeCliente'),
+    codigoProjeto: formData.get('codigoProjeto'),
+    endereco: formData.get('endereco'),
+    dataLimpeza: formData.get('dataLimpeza'),
+    tecnicoResponsavel: formData.get('tecnico'),
+    analistaResponsavel: formData.get('analista'),
+    observacao: formData.get('observacao'),
+    timestamp: new Date().toISOString()
+  };
+
+  if (tipoLaudo === 'avulsa') {
+    laudoData.valorAvulsa = formData.get('valorAvulsa');
+    laudoData.valorPacote = formData.get('valorPacote');
+    
+    if (formData.get('coletarGeracao') === 'on') {
+      laudoData.geracaoAntes = formData.get('geracaoAntes');
+      laudoData.geracaoDepois = formData.get('geracaoDepois');
+    }
+  }
+
+  // Aqui você pode adicionar a lógica de envio para sua API
+  console.log('Dados do laudo:', laudoData);
+  console.log('Fotos antes:', fotosAntes);
+  console.log('Fotos depois:', fotosDepois);
+
+  // Simular envio
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span style="animation: spin 1s linear infinite; display: inline-block;">◐</span> Gerando laudo...';
+
+  setTimeout(() => {
+    showAlert('Laudo gerado com sucesso! Os dados foram registrados no sistema.', 'success');
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'Gerar Laudo de Limpeza <span>→</span>';
+    
+    // Opcional: resetar formulário
+    // e.target.reset();
+    // document.getElementById('previewAntes').innerHTML = '';
+    // document.getElementById('previewDepois').innerHTML = '';
+  }, 2000);
+});
+
+// Animação de spin
+const style = document.createElement('style');
+style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+document.head.appendChild(style);
+</script>
+</body>
+</html>
