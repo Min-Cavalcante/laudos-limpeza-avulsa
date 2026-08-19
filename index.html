@@ -3,70 +3,63 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Laudo de Limpeza — Gauss Energia</title>
+<title>Laudo de limpeza — Gauss Energia</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="./colors_and_type.css">
 <style>
-  body { 
-    margin: 0; 
-    padding: 32px 20px; 
+  body {
+    margin: 0;
     background: var(--bg-paper);
     min-height: 100vh;
   }
-  
-  .container {
-    max-width: 840px;
-    margin: 0 auto;
-  }
 
-  .header {
-    text-align: center;
-    margin-bottom: 48px;
-    padding-bottom: 32px;
-    border-bottom: 1px solid var(--border-hairline);
-  }
+  .page { max-width: 840px; margin: 0 auto; padding: 0 20px 64px; }
 
-  .header .logo {
-    width: 48px;
-    height: 48px;
-    margin: 0 auto 16px;
-    background: var(--gauss-green);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  /* ---------- Hero header ---------- */
+  .hero {
+    background: var(--bg-hero);
+    padding: 40px 20px 32px;
+    margin-bottom: 40px;
+  }
+  .hero-inner { max-width: 840px; margin: 0 auto; text-align: center; }
+  .hero-inner .mark { width: 100px; margin: 0 auto 20px; display: block; }
+  .hero-inner .eb {
     font-family: var(--font-display);
-    font-weight: 800;
-    font-size: 24px;
-    color: white;
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--gauss-green);
+    margin-bottom: 10px;
   }
-
-  .header h1 {
-    font-size: 32px;
+  .hero-inner h1 {
+    color: var(--white);
     font-weight: 800;
-    letter-spacing: -0.02em;
+    font-size: 34px;
+    letter-spacing: var(--tracking-tight);
     margin: 0 0 8px;
-    color: var(--ink-900);
   }
-
-  .header p {
-    color: var(--fg-3);
+  .hero-inner p {
+    color: rgba(255,255,255,0.62);
     margin: 0;
+    font-size: var(--fs-sm);
   }
 
+  /* ---------- Cards / sections ---------- */
   .card {
-    background: white;
+    background: var(--bg-surface);
     border: 1px solid var(--border-hairline);
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     padding: 32px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     box-shadow: var(--shadow-sm);
   }
 
   .section-title {
     font-family: var(--font-display);
-    font-size: 11px;
+    font-size: var(--fs-label);
     font-weight: 600;
-    letter-spacing: 0.14em;
+    letter-spacing: var(--tracking-label);
     text-transform: uppercase;
     color: var(--gauss-green-700);
     margin: 0 0 20px;
@@ -74,27 +67,25 @@
     border-bottom: 2px solid var(--gauss-green-100);
   }
 
-  .field {
-    margin-bottom: 20px;
-  }
+  /* ---------- Fields ---------- */
+  .field { margin-bottom: 20px; }
+  .field:last-child { margin-bottom: 0; }
 
   .field label {
     display: block;
     font-family: var(--font-display);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
-    color: var(--ink-700);
+    letter-spacing: 0.02em;
+    color: var(--fg-2);
     margin-bottom: 8px;
   }
+  .field label .required { color: var(--signal-warn); margin-left: 2px; }
+  .field label .opt { font-weight: 400; color: var(--fg-3); }
 
-  .field label .required {
-    color: var(--signal-warn);
-    margin-left: 2px;
-  }
-
+  .input,
   .field input[type="text"],
   .field input[type="date"],
-  .field input[type="number"],
   .field textarea {
     width: 100%;
     font-family: var(--font-body);
@@ -102,102 +93,76 @@
     padding: 12px 14px;
     border-radius: 6px;
     border: 1px solid var(--ink-300);
-    background: white;
-    transition: all .15s;
+    background: var(--white);
+    transition: all .15s ease;
     box-sizing: border-box;
+    color: var(--ink-900);
   }
+  .field input::placeholder,
+  .field textarea::placeholder { color: var(--fg-3); }
 
   .field input:focus,
   .field textarea:focus {
     outline: none;
     border-color: var(--gauss-green);
-    box-shadow: 0 0 0 3px rgba(57,181,74,0.12);
+    box-shadow: var(--shadow-glow-green);
   }
 
-  .field textarea {
-    min-height: 100px;
-    resize: vertical;
-    font-family: var(--font-body);
-  }
+  .field textarea { min-height: 96px; resize: vertical; }
 
-  .field-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-  .radio-group {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 32px;
-  }
-
-  .radio-card {
-    flex: 1;
-    position: relative;
-  }
-
-  .radio-card input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-  }
-
+  /* ---------- Report-type selector ---------- */
+  .radio-group { display: flex; gap: 12px; margin-bottom: 8px; }
+  .radio-card { flex: 1; position: relative; }
+  .radio-card input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
   .radio-card label {
     display: block;
-    padding: 20px;
-    background: white;
-    border: 2px solid var(--ink-200);
-    border-radius: 8px;
+    padding: 18px 20px;
+    background: var(--white);
+    border: 1.5px solid var(--ink-200);
+    border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all .15s;
+    transition: all .15s ease;
     text-align: center;
+    margin: 0;
   }
-
   .radio-card input:checked + label {
     border-color: var(--gauss-green);
     background: var(--gauss-green-100);
   }
-
   .radio-card label .title {
     font-family: var(--font-display);
-    font-weight: 600;
+    font-weight: 700;
     font-size: 15px;
     color: var(--ink-900);
     margin-bottom: 4px;
   }
+  .radio-card label .desc { font-size: 12px; color: var(--fg-3); }
 
-  .radio-card label .desc {
-    font-size: 12px;
-    color: var(--fg-3);
-  }
-
-  .checkbox-field {
+  /* ---------- Toggle callout (checkbox) ---------- */
+  .toggle-field {
     display: flex;
     align-items: flex-start;
     gap: 12px;
-    padding: 16px;
+    padding: 16px 18px;
     background: var(--gauss-green-100);
-    border: 1px solid var(--gauss-green-300);
-    border-radius: 8px;
-    margin-bottom: 24px;
+    border-left: 3px solid var(--gauss-green);
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 20px;
     cursor: pointer;
-    transition: all .15s;
+    transition: background .15s ease;
   }
-
-  .checkbox-field:hover {
-    background: var(--gauss-green-300);
-  }
-
-  .checkbox-field input[type="checkbox"] {
+  .toggle-field:hover { background: var(--gauss-green-300); }
+  .toggle-field input[type="checkbox"] {
     margin-top: 2px;
     width: 18px;
     height: 18px;
     cursor: pointer;
     accent-color: var(--gauss-green);
+    flex: 0 0 18px;
   }
-
-  .checkbox-field label {
+  .toggle-field label {
     flex: 1;
     font-family: var(--font-display);
     font-weight: 600;
@@ -207,30 +172,20 @@
     margin: 0;
   }
 
+  /* ---------- File upload ---------- */
   .file-upload {
-    border: 2px dashed var(--ink-300);
-    border-radius: 8px;
+    border: 1.5px dashed var(--ink-300);
+    border-radius: var(--radius-md);
     padding: 24px;
     text-align: center;
     background: var(--ink-50);
-    transition: all .15s;
+    transition: all .15s ease;
     cursor: pointer;
   }
-
-  .file-upload:hover {
-    border-color: var(--gauss-green);
-    background: var(--gauss-green-100);
-  }
-
-  .file-upload input[type="file"] {
-    display: none;
-  }
-
-  .file-upload .icon {
-    font-size: 32px;
-    margin-bottom: 8px;
-  }
-
+  .file-upload:hover { border-color: var(--gauss-green); background: var(--gauss-green-100); }
+  .file-upload input[type="file"] { display: none; }
+  .file-upload .icon { width: 30px; height: 30px; margin: 0 auto 10px; stroke: var(--ink-500); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+  .file-upload:hover .icon { stroke: var(--gauss-green-700); }
   .file-upload .text {
     font-family: var(--font-display);
     font-size: 14px;
@@ -238,56 +193,36 @@
     color: var(--ink-700);
     margin-bottom: 4px;
   }
+  .file-upload .hint { font-size: 12px; color: var(--fg-3); }
 
-  .file-upload .hint {
-    font-size: 12px;
-    color: var(--fg-3);
-  }
-
-  .file-preview {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-  }
-
+  .file-preview { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
   .file-preview-item {
     position: relative;
-    width: 120px;
-    height: 120px;
-    border-radius: 6px;
+    width: 112px;
+    height: 112px;
+    border-radius: var(--radius-sm);
     overflow: hidden;
     border: 1px solid var(--border-hairline);
   }
-
-  .file-preview-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
+  .file-preview-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .file-preview-item .remove {
     position: absolute;
-    top: 4px;
-    right: 4px;
-    width: 24px;
-    height: 24px;
-    background: rgba(217,83,79,0.9);
+    top: 4px; right: 4px;
+    width: 22px; height: 22px;
+    background: rgba(7,16,10,0.72);
     border-radius: 4px;
     border: none;
-    color: white;
+    color: var(--white);
     cursor: pointer;
-    font-size: 16px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
   }
+  .file-preview-item .remove:hover { background: var(--signal-warn); }
+  .file-preview-item .remove svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 2.4; }
 
-  .hidden {
-    display: none;
-  }
+  .hidden { display: none; }
 
+  /* ---------- Button ---------- */
   .btn {
     display: inline-flex;
     align-items: center;
@@ -296,202 +231,154 @@
     font-family: var(--font-display);
     font-weight: 600;
     font-size: 16px;
-    padding: 16px 32px;
+    padding: 16px 28px;
     border-radius: 6px;
-    border: none;
+    border: 1px solid transparent;
     cursor: pointer;
-    transition: all .15s;
+    transition: all .15s ease;
     text-decoration: none;
     width: 100%;
     box-sizing: border-box;
+    letter-spacing: -0.005em;
   }
-
   .btn-primary {
     background: var(--gauss-green);
     color: var(--ink-1000);
     box-shadow: var(--shadow-sm);
   }
+  .btn-primary:hover { background: var(--gauss-green-700); color: var(--white); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn .arrow { font-size: 18px; transition: transform .15s; }
+  .btn:hover .arrow { transform: translateX(2px); }
 
-  .btn-primary:hover {
-    background: var(--gauss-green-700);
-    color: white;
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-  }
+  .submit-section { margin-top: 28px; }
 
-  .btn-primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .submit-section {
-    margin-top: 32px;
-  }
-
+  /* ---------- Alerts ---------- */
   .alert {
-    padding: 16px 20px;
-    border-radius: 8px;
-    margin-bottom: 24px;
+    padding: 14px 18px;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
     display: flex;
     gap: 12px;
     align-items: flex-start;
   }
+  .alert-success { background: var(--gauss-green-100); border: 1px solid var(--gauss-green-300); color: var(--gauss-green-900); }
+  .alert-error { background: #FEF3E1; border: 1px solid var(--signal-warn); color: #946100; }
+  .alert .icon { width: 20px; height: 20px; flex: 0 0 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .alert .content { flex: 1; font-size: 14px; line-height: 1.5; }
 
-  .alert-success {
-    background: var(--gauss-green-100);
-    border: 1px solid var(--gauss-green-300);
-    color: var(--gauss-green-900);
-  }
-
-  .alert-error {
-    background: #FEF3E1;
-    border: 1px solid var(--signal-warn);
-    color: #946100;
-  }
-
-  .alert .icon {
-    font-size: 20px;
-    line-height: 1;
-  }
-
-  .alert .content {
-    flex: 1;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  /* Animação suave para mostrar/esconder campos */
-  .slide-down {
-    animation: slideDown 0.3s ease-out;
-  }
-
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+  .slide-down { animation: slideDown 0.25s ease-out; }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   @media (max-width: 640px) {
-    .field-grid {
-      grid-template-columns: 1fr;
-    }
-    
-    .radio-group {
-      flex-direction: column;
-    }
-    
-    body {
-      padding: 20px 16px;
-    }
-    
-    .card {
-      padding: 24px 20px;
-    }
+    .field-grid { grid-template-columns: 1fr; }
+    .radio-group { flex-direction: column; }
+    .card { padding: 24px 20px; }
   }
 </style>
 </head>
 <body>
-<div class="container">
-  <header class="header">
-    <div class="logo">G</div>
-    <h1>Laudo de Limpeza</h1>
-    <p>Sistema de registro e documentação de limpeza fotovoltaica</p>
-  </header>
 
+<div class="hero">
+  <div class="hero-inner">
+    <img class="mark" src="./assets/gauss-logo-mark-white.svg" alt="Gauss Energia">
+    <div class="eb">Sistema interno · O&amp;M</div>
+    <h1>Laudo de limpeza</h1>
+    <p>Registro e documentação de limpeza fotovoltaica</p>
+  </div>
+</div>
+
+<div class="page">
   <form id="laudoForm">
-    <!-- Tipo de Laudo -->
+
+    <!-- Tipo de laudo -->
     <div class="card">
-      <div class="section-title">Tipo de Laudo</div>
+      <div class="section-title">Tipo de laudo</div>
       <div class="radio-group">
         <div class="radio-card">
           <input type="radio" name="tipoLaudo" id="avulsa" value="avulsa" checked>
           <label for="avulsa">
-            <div class="title">Limpeza Avulsa</div>
+            <div class="title">Limpeza avulsa</div>
             <div class="desc">Com dados de geração e valores comerciais</div>
           </label>
         </div>
         <div class="radio-card">
           <input type="radio" name="tipoLaudo" id="padrao" value="padrao">
           <label for="padrao">
-            <div class="title">Limpeza Padrão</div>
+            <div class="title">Limpeza padrão</div>
             <div class="desc">Apenas informações técnicas e fotos</div>
           </label>
         </div>
       </div>
     </div>
 
-    <!-- Informações Gerais -->
+    <!-- Informações gerais -->
     <div class="card">
-      <div class="section-title">Informações Gerais</div>
-      
+      <div class="section-title">Informações gerais</div>
+
       <div class="field">
-        <label>Nome do Cliente <span class="required">*</span></label>
-        <input type="text" name="nomeCliente" required placeholder="Ex: João Silva">
+        <label>Nome do cliente <span class="required">*</span></label>
+        <input class="input" type="text" name="nomeCliente" required placeholder="Ex: João Silva">
       </div>
 
       <div class="field-grid">
         <div class="field">
-          <label>Código do Projeto <span class="required">*</span></label>
-          <input type="text" name="codigoProjeto" required placeholder="Ex: GE-2024-001">
+          <label>Código do projeto <span class="required">*</span></label>
+          <input class="input" type="text" name="codigoProjeto" required placeholder="Ex: GE-2026-001">
         </div>
         <div class="field">
-          <label>Data da Limpeza <span class="required">*</span></label>
-          <input type="date" name="dataLimpeza" required>
+          <label>Data da limpeza <span class="required">*</span></label>
+          <input class="input" type="date" name="dataLimpeza" required>
         </div>
       </div>
 
       <div class="field">
         <label>Endereço <span class="required">*</span></label>
-        <input type="text" name="endereco" required placeholder="Rua, número, bairro, cidade - UF">
+        <input class="input" type="text" name="endereco" required placeholder="Rua, número, bairro, cidade – UF">
       </div>
 
       <div class="field-grid">
         <div class="field">
-          <label>Técnico Responsável <span class="required">*</span></label>
-          <input type="text" name="tecnico" required placeholder="Nome completo">
+          <label>Técnico responsável <span class="required">*</span></label>
+          <input class="input" type="text" name="tecnico" required placeholder="Nome completo">
         </div>
         <div class="field">
-          <label>Analista Responsável <span class="required">*</span></label>
-          <input type="text" name="analista" required placeholder="Nome completo">
+          <label>Analista responsável <span class="required">*</span></label>
+          <input class="input" type="text" name="analista" required placeholder="Nome completo">
         </div>
       </div>
     </div>
 
-    <!-- Campos específicos - Limpeza Avulsa -->
+    <!-- Campos específicos — Limpeza avulsa -->
     <div id="camposAvulsa">
       <div class="card">
-        <div class="checkbox-field" onclick="toggleCheckbox('coletarGeracao')">
+        <div class="toggle-field" onclick="toggleCheckbox('coletarGeracao')">
           <input type="checkbox" id="coletarGeracao" name="coletarGeracao" onclick="event.stopPropagation()">
           <label for="coletarGeracao">Coletar dados de geração (antes e depois da limpeza)</label>
         </div>
 
         <div id="dadosGeracao" class="hidden">
-          <div class="field-grid">
-            <div class="field">
-              <label>Geração 15 dias antes (kWh) <span class="required">*</span></label>
-              <input type="number" name="geracaoAntes" id="geracaoAntes" step="0.01" placeholder="Ex: 1250.50">
+          <div class="field-grid" style="margin-bottom: 20px;">
+            <div class="field" style="margin-bottom: 0;">
+              <label>Geração 15 dias antes <span class="required">*</span> <span class="opt">(kWh)</span></label>
+              <input class="input" type="text" inputmode="decimal" name="geracaoAntes" id="geracaoAntes" placeholder="Ex: 1.250,50">
             </div>
-            <div class="field">
-              <label>Geração 15 dias depois (kWh) <span class="required">*</span></label>
-              <input type="number" name="geracaoDepois" id="geracaoDepois" step="0.01" placeholder="Ex: 1448.75">
+            <div class="field" style="margin-bottom: 0;">
+              <label>Geração 15 dias depois <span class="required">*</span> <span class="opt">(kWh)</span></label>
+              <input class="input" type="text" inputmode="decimal" name="geracaoDepois" id="geracaoDepois" placeholder="Ex: 1.448,75">
             </div>
           </div>
         </div>
 
-        <div class="field-grid" style="margin-top: 20px;">
-          <div class="field">
-            <label>Valor da Limpeza Avulsa (R$) <span class="required">*</span></label>
-            <input type="number" name="valorAvulsa" id="valorAvulsa" step="0.01" placeholder="Ex: 450.00">
+        <div class="field-grid">
+          <div class="field" style="margin-bottom: 0;">
+            <label>Valor da limpeza avulsa <span class="required">*</span></label>
+            <input class="input" type="text" inputmode="decimal" name="valorAvulsa" id="valorAvulsa" placeholder="R$ 450,00">
           </div>
-          <div class="field">
-            <label>Valor do Pacote de Limpezas (R$) <span class="required">*</span></label>
-            <input type="number" name="valorPacote" id="valorPacote" step="0.01" placeholder="Ex: 1200.00">
+          <div class="field" style="margin-bottom: 0;">
+            <label>Valor do pacote de limpezas <span class="required">*</span></label>
+            <input class="input" type="text" inputmode="decimal" name="valorPacote" id="valorPacote" placeholder="R$ 1.200,00">
           </div>
         </div>
       </div>
@@ -499,25 +386,25 @@
 
     <!-- Fotos -->
     <div class="card">
-      <div class="section-title">Documentação Fotográfica</div>
-      
+      <div class="section-title">Documentação fotográfica</div>
+
       <div class="field">
-        <label>Fotos ANTES da limpeza <span class="required">*</span> <span style="font-weight: 400; color: var(--fg-3);">(2 fotos)</span></label>
+        <label>Fotos antes da limpeza <span class="required">*</span> <span class="opt">(2 fotos)</span></label>
         <div class="file-upload" onclick="document.getElementById('fotosAntes').click()">
-          <div class="icon">📷</div>
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 8h3l1.5-2.5h7L17 8h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="14" r="3.6"/></svg>
           <div class="text">Clique para selecionar fotos</div>
-          <div class="hint">PNG, JPG ou WEBP · Máx. 5MB cada</div>
+          <div class="hint">PNG, JPG ou WEBP · máx. 5&nbsp;MB cada</div>
           <input type="file" id="fotosAntes" name="fotosAntes" accept="image/*" multiple>
         </div>
         <div id="previewAntes" class="file-preview"></div>
       </div>
 
-      <div class="field">
-        <label>Fotos DEPOIS da limpeza <span class="required">*</span> <span style="font-weight: 400; color: var(--fg-3);">(2 fotos)</span></label>
+      <div class="field" style="margin-bottom: 0;">
+        <label>Fotos depois da limpeza <span class="required">*</span> <span class="opt">(2 fotos)</span></label>
         <div class="file-upload" onclick="document.getElementById('fotosDepois').click()">
-          <div class="icon">📷</div>
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 8h3l1.5-2.5h7L17 8h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="14" r="3.6"/></svg>
           <div class="text">Clique para selecionar fotos</div>
-          <div class="hint">PNG, JPG ou WEBP · Máx. 5MB cada</div>
+          <div class="hint">PNG, JPG ou WEBP · máx. 5&nbsp;MB cada</div>
           <input type="file" id="fotosDepois" name="fotosDepois" accept="image/*" multiple>
         </div>
         <div id="previewDepois" class="file-preview"></div>
@@ -527,8 +414,8 @@
     <!-- Observações -->
     <div class="card">
       <div class="section-title">Observações</div>
-      <div class="field">
-        <label>Observação (opcional)</label>
+      <div class="field" style="margin-bottom: 0;">
+        <label>Observação <span class="opt">(opcional)</span></label>
         <textarea name="observacao" placeholder="Informações adicionais sobre a limpeza, condições encontradas, recomendações, etc."></textarea>
       </div>
     </div>
@@ -536,30 +423,29 @@
     <!-- Submit -->
     <div class="submit-section">
       <button type="submit" class="btn btn-primary">
-        Gerar Laudo de Limpeza
-        <span>→</span>
+        Gerar laudo de limpeza
+        <span class="arrow">→</span>
       </button>
     </div>
   </form>
 
-  <div id="alertContainer"></div>
+  <div id="alertContainer" style="margin-top: 20px;"></div>
 </div>
 
 <script>
-// Função para toggle do checkbox (chamada pelo clique no div)
+// Toggle do checkbox (clique no callout inteiro)
 function toggleCheckbox(checkboxId) {
   const checkbox = document.getElementById(checkboxId);
   checkbox.checked = !checkbox.checked;
   toggleDadosGeracao();
 }
 
-// Função para mostrar/esconder campos de geração
 function toggleDadosGeracao() {
   const checkbox = document.getElementById('coletarGeracao');
   const dadosGeracao = document.getElementById('dadosGeracao');
   const geracaoAntes = document.getElementById('geracaoAntes');
   const geracaoDepois = document.getElementById('geracaoDepois');
-  
+
   if (checkbox.checked) {
     dadosGeracao.classList.remove('hidden');
     dadosGeracao.classList.add('slide-down');
@@ -573,11 +459,9 @@ function toggleDadosGeracao() {
     geracaoDepois.value = '';
   }
 }
-
-// Event listener direto no checkbox também
 document.getElementById('coletarGeracao').addEventListener('change', toggleDadosGeracao);
 
-// Alternar campos baseado no tipo de laudo
+// Alternar campos conforme tipo de laudo
 const radioAvulsa = document.getElementById('avulsa');
 const radioPadrao = document.getElementById('padrao');
 const camposAvulsa = document.getElementById('camposAvulsa');
@@ -602,6 +486,12 @@ radioPadrao.addEventListener('change', () => {
   }
 });
 
+// Converte número no formato pt-BR ("1.250,50") para float
+function parsePtBrNumber(str) {
+  if (!str) return NaN;
+  return parseFloat(String(str).replace(/\./g, '').replace(',', '.'));
+}
+
 // Preview de imagens
 function setupFilePreview(inputId, previewId, maxFiles = 2) {
   const input = document.getElementById(inputId);
@@ -610,7 +500,7 @@ function setupFilePreview(inputId, previewId, maxFiles = 2) {
 
   input.addEventListener('change', (e) => {
     const newFiles = Array.from(e.target.files);
-    
+
     if (files.length + newFiles.length > maxFiles) {
       showAlert(`Você pode adicionar no máximo ${maxFiles} fotos`, 'error');
       input.value = '';
@@ -623,31 +513,32 @@ function setupFilePreview(inputId, previewId, maxFiles = 2) {
 
   function updatePreview() {
     preview.innerHTML = '';
-    
+
     files.forEach((file, index) => {
       const reader = new FileReader();
       reader.onload = (e) => {
         const div = document.createElement('div');
         div.className = 'file-preview-item';
         div.innerHTML = `
-          <img src="${e.target.result}" alt="Preview">
-          <button type="button" class="remove" data-input="${inputId}" data-index="${index}">×</button>
+          <img src="${e.target.result}" alt="Pré-visualização">
+          <button type="button" class="remove" data-input="${inputId}" data-index="${index}" aria-label="Remover foto">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+          </button>
         `;
         preview.appendChild(div);
       };
       reader.readAsDataURL(file);
     });
 
-    // Update input files
     const dataTransfer = new DataTransfer();
     files.forEach(file => dataTransfer.items.add(file));
     input.files = dataTransfer.files;
   }
 
-  // Event delegation para botões de remover
   preview.addEventListener('click', (e) => {
-    if (e.target.classList.contains('remove')) {
-      const index = parseInt(e.target.dataset.index);
+    const btn = e.target.closest('.remove');
+    if (btn) {
+      const index = parseInt(btn.dataset.index);
       files.splice(index, 1);
       updatePreview();
     }
@@ -657,59 +548,53 @@ function setupFilePreview(inputId, previewId, maxFiles = 2) {
 setupFilePreview('fotosAntes', 'previewAntes', 2);
 setupFilePreview('fotosDepois', 'previewDepois', 2);
 
-// Alert system
+// Sistema de alertas
 function showAlert(message, type = 'success') {
   const container = document.getElementById('alertContainer');
   const alert = document.createElement('div');
   alert.className = `alert alert-${type}`;
-  alert.innerHTML = `
-    <div class="icon">${type === 'success' ? '✓' : '⚠'}</div>
-    <div class="content">${message}</div>
-  `;
+  const icon = type === 'success'
+    ? '<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></svg>'
+    : '<svg class="icon" viewBox="0 0 24 24"><path d="M12 3.5 21 19H3z"/><line x1="12" y1="10" x2="12" y2="14.5"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg>';
+  alert.innerHTML = `${icon}<div class="content">${message}</div>`;
   container.appendChild(alert);
-  
-  setTimeout(() => {
-    alert.remove();
-  }, 5000);
+
+  setTimeout(() => { alert.remove(); }, 5000);
 }
 
-// Form submission
+// Envio do formulário
 document.getElementById('laudoForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  
+
   const formData = new FormData(e.target);
   const tipoLaudo = formData.get('tipoLaudo');
-  
-  // Validação de fotos
+
   const fotosAntes = document.getElementById('fotosAntes').files;
   const fotosDepois = document.getElementById('fotosDepois').files;
-  
+
   if (fotosAntes.length !== 2) {
-    showAlert('Por favor, adicione exatamente 2 fotos ANTES da limpeza', 'error');
+    showAlert('Por favor, adicione exatamente 2 fotos de antes da limpeza', 'error');
     return;
   }
-  
   if (fotosDepois.length !== 2) {
-    showAlert('Por favor, adicione exatamente 2 fotos DEPOIS da limpeza', 'error');
+    showAlert('Por favor, adicione exatamente 2 fotos de depois da limpeza', 'error');
     return;
   }
 
-  // Validação específica para limpeza avulsa
   if (tipoLaudo === 'avulsa') {
     const valorAvulsa = formData.get('valorAvulsa');
     const valorPacote = formData.get('valorPacote');
-    
+
     if (!valorAvulsa || !valorPacote) {
       showAlert('Por favor, preencha os valores da limpeza avulsa e do pacote', 'error');
       return;
     }
 
-    // Validação dos dados de geração se checkbox estiver marcado
     const coletarGeracao = document.getElementById('coletarGeracao').checked;
     if (coletarGeracao) {
       const geracaoAntes = formData.get('geracaoAntes');
       const geracaoDepois = formData.get('geracaoDepois');
-      
+
       if (!geracaoAntes || !geracaoDepois) {
         showAlert('Por favor, preencha os dados de geração antes e depois da limpeza', 'error');
         return;
@@ -717,7 +602,6 @@ document.getElementById('laudoForm').addEventListener('submit', async (e) => {
     }
   }
 
-  // Preparar dados para envio
   const laudoData = {
     tipoLaudo: formData.get('tipoLaudo'),
     nomeCliente: formData.get('nomeCliente'),
@@ -731,50 +615,35 @@ document.getElementById('laudoForm').addEventListener('submit', async (e) => {
   };
 
   if (tipoLaudo === 'avulsa') {
-    laudoData.valorAvulsa = formData.get('valorAvulsa');
-    laudoData.valorPacote = formData.get('valorPacote');
-    
+    laudoData.valorAvulsa = parsePtBrNumber(formData.get('valorAvulsa'));
+    laudoData.valorPacote = parsePtBrNumber(formData.get('valorPacote'));
+
     if (document.getElementById('coletarGeracao').checked) {
-      laudoData.geracaoAntes = formData.get('geracaoAntes');
-      laudoData.geracaoDepois = formData.get('geracaoDepois');
-      
-      // Calcular aumento percentual
-      const antes = parseFloat(laudoData.geracaoAntes);
-      const depois = parseFloat(laudoData.geracaoDepois);
-      if (antes && depois) {
-        const aumento = ((depois - antes) / antes * 100).toFixed(2);
-        laudoData.aumentoPercentual = aumento;
+      const antes = parsePtBrNumber(formData.get('geracaoAntes'));
+      const depois = parsePtBrNumber(formData.get('geracaoDepois'));
+      laudoData.geracaoAntes = antes;
+      laudoData.geracaoDepois = depois;
+
+      if (!isNaN(antes) && !isNaN(depois) && antes !== 0) {
+        laudoData.aumentoPercentual = ((depois - antes) / antes * 100).toFixed(2);
       }
     }
   }
 
-  // Aqui você pode adicionar a lógica de envio para sua API
   console.log('Dados do laudo:', laudoData);
   console.log('Fotos antes:', fotosAntes);
   console.log('Fotos depois:', fotosDepois);
 
-  // Simular envio
   const submitBtn = e.target.querySelector('button[type="submit"]');
   submitBtn.disabled = true;
-  submitBtn.innerHTML = '<span style="animation: spin 1s linear infinite; display: inline-block;">◐</span> Gerando laudo...';
+  submitBtn.innerHTML = '<span style="animation: spin 1s linear infinite; display: inline-block;">◐</span> Gerando laudo…';
 
   setTimeout(() => {
     showAlert('Laudo gerado com sucesso! Os dados foram registrados no sistema.', 'success');
     submitBtn.disabled = false;
-    submitBtn.innerHTML = 'Gerar Laudo de Limpeza <span>→</span>';
-    
-    // Opcional: resetar formulário
-    // e.target.reset();
-    // document.getElementById('previewAntes').innerHTML = '';
-    // document.getElementById('previewDepois').innerHTML = '';
-    // document.getElementById('dadosGeracao').classList.add('hidden');
+    submitBtn.innerHTML = 'Gerar laudo de limpeza <span class="arrow">→</span>';
   }, 2000);
 });
-
-// Animação de spin
-const style = document.createElement('style');
-style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
-document.head.appendChild(style);
 </script>
 </body>
 </html>
